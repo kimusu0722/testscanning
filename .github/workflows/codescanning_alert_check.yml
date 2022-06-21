@@ -1,0 +1,21 @@
+name: CodeScanningAlertCheck
+
+on:
+  workflow_run:
+    workflows: [CodeQL]
+    types: [completed]
+
+jobs:
+  alert-check:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo 'The triggering workflow passed'
+#      - run: echo ${{ github.event.code_scanning_alert.alert.html }}
+#      - run: echo ${{ github.event.code_scanning_alert.alert.html_url }}
+      - run: echo '${{ toJson(github) }}'
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
