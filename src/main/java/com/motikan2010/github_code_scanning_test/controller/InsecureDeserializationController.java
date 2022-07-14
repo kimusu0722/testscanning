@@ -31,9 +31,16 @@ public class InsecureDeserializationController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.POST)
     public ResponseEntity<String> top(ServletRequest request) {
+        Person p = null;
+        try {
+            ServletInputStream sis = request.getInputStream();
+            ObjectInputStream oin = new ObjectInputStream(sis);
+            p = (Person)oin.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>(p.showInfo(), HttpStatus.OK);
     }
 
 }
