@@ -1,0 +1,25 @@
+name: add-pr-comment
+
+on:
+   #pull_request_review_comment:
+   issue_comment:
+     #branches:
+     #  - main
+     types: [created, edited]
+   workflow_dispatch:
+
+env:
+  RELAYAPP_TOKEN: ${{ secrets.RELAYAPP_GITHUB_TOKEN }}
+  RELAYAPP_HOOK_URL: "\
+  ${{ secrets.RELAYAPP_HOOK_URL }}\
+  /api/StubFunc2\
+  "
+
+jobs:
+  RelayAppCall:
+    runs-on: windows-latest
+    steps:
+       - name: CALL CloudToolsRelayApp with curl
+         if: contains(github.event.comment.html_url, '/pull/')
+         run: |
+           curl -X POST -H "X-Token: ${{ env.RELAYAPP_TOKEN }}" -H "Content-Type: application/json" -d @${{ github.event_path }} ${{ env.RELAYAPP_HOOK_URL }}
